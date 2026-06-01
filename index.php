@@ -8,24 +8,61 @@ $message = "";
 
 if(isset($_POST['submit']))
 {
-    $mobileno = $_POST['mobileno'];
+    $name       = trim($_POST['name']);
+    $age        = $_POST['age'];
+    $mobileno   = trim($_POST['mobileno']);
+    $email      = trim($_POST['email']);
+    $password   = $_POST['password'];
+    $confirmPwd = $_POST['confirm_password'];
 
-    if(strlen($mobileno) != 10)
+    // Name Validation
+    if(empty($name))
+    {
+        $message = "Name is required";
+    }
+    elseif(!preg_match("/^[a-zA-Z ]+$/", $name))
+    {
+        $message = "Name should contain only letters";
+    }
+
+    // Age Validation
+    elseif($age < 18 || $age > 100)
+    {
+        $message = "Age must be between 18 and 100";
+    }
+
+    // Mobile Validation
+    elseif(!preg_match("/^[0-9]{10}$/", $mobileno))
     {
         $message = "Please enter a valid 10-digit mobile number";
     }
-    elseif($_POST['password'] != $_POST['confirm_password'])
+
+    // Email Validation
+    elseif(!filter_var($email, FILTER_VALIDATE_EMAIL))
+    {
+        $message = "Please enter a valid email address";
+    }
+
+    // Password Validation
+    elseif(strlen($password) < 6)
+    {
+        $message = "Password must be at least 6 characters";
+    }
+
+    // Confirm Password Validation
+    elseif($password != $confirmPwd)
     {
         $message = "Password does not match";
     }
+
     else
     {
         $user->register(
-            $_POST['name'],
-            $_POST['age'],
-            $_POST['mobileno'],
-            $_POST['email'],
-            $_POST['password']
+            $name,
+            $age,
+            $mobileno,
+            $email,
+            $password
         );
 
         header("Location: login.php");
@@ -33,47 +70,3 @@ if(isset($_POST['submit']))
     }
 }
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<h2>Registration Form</h2>
-<div class="container">
-<form method="POST">
-
-<input type="text" name="name" placeholder="Name" required><br><br>
-
-<input type="number" name="age" placeholder="Age" required><br><br>
-
-<input type="text" name="mobileno" placeholder="Mobile" required><br><br>
-
-<input type="email" name="email" placeholder="Email" required><br><br>
-
-<input type="password" name="password" placeholder="Password" required><br><br>
-
-<input type="password"
-name="confirm_password"
-placeholder="Confirm Password"
-required><br><br>
-
-<p style="color:red;">
-<?php echo $message; ?>
-</p>
-
-<button type="submit" name="submit">
-Register
-</button>
-
-</form>
-</div>
-<br>
-
-<a href="login.php">Login</a>
-
-</body>
-</html>
