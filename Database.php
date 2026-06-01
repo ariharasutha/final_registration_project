@@ -9,7 +9,7 @@ class Database
         $this->conn = new mysqli(
             "localhost",
             "root",
-            "",
+            "novalnet",
             "project"
         );
 
